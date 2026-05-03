@@ -1,5 +1,9 @@
 <?php
-$koneksi = mysqli_connect("localhost", "kure8737_spazyan", "Panggung00@", "kure8737_spazyan");
+try {
+    $koneksi = mysqli_connect("localhost", "kure8737_spazyan", "Panggung00@", "kure8737_spazyan");
+} catch (mysqli_sql_exception $e) {
+    die("Koneksi Database Gagal: " . $e->getMessage());
+}
 
 if (!$koneksi) {
     die("Koneksi Database Gagal: " . mysqli_connect_error());
