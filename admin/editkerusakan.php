@@ -10,20 +10,20 @@ include 'koneksi.php'; // Path Diperbaiki
 
 // Logika untuk MEMPROSES form saat disubmit
 if(isset($_POST['ubah'])){
-    $id_gejala = $_POST['id_gejala'];
-    $nama_gejala = $_POST['nama_gejala'];
-    $kategori = isset($_POST['kategori']) ? $_POST['kategori'] : 'Lainnya';
+    $id_penyakit = $_POST['id_penyakit'];
+    $nama_penyakit = $_POST['nama_penyakit'];
+    $solusi = $_POST['solusi'];
 
-    if(empty($nama_gejala)) {
-        echo "<script>alert('Nama gejala tidak boleh kosong!'); window.history.back();</script>";
+    if(empty($nama_penyakit) || empty($solusi)) {
+        echo "<script>alert('Nama kerusakan dan solusi tidak boleh kosong!'); window.history.back();</script>";
     } else {
-        $sql = "UPDATE tbl_gejala SET nama_gejala = ?, kategori = ? WHERE id_gejala = ?";
+        $sql = "UPDATE tbl_penyakit SET nama_penyakit = ?, solusi = ? WHERE id_penyakit = ?";
         $stmt = mysqli_prepare($koneksi, $sql);
-        mysqli_stmt_bind_param($stmt, "sss", $nama_gejala, $kategori, $id_gejala);
+        mysqli_stmt_bind_param($stmt, "sss", $nama_penyakit, $solusi, $id_penyakit);
 
         if(mysqli_stmt_execute($stmt)){
-            $_SESSION['pesan_sukses'] = "Data gejala berhasil diperbarui.";
-            header("Location: gejala.php"); // Path Diperbaiki
+            $_SESSION['pesan_sukses'] = "Data kerusakan berhasil diperbarui.";
+            header("Location: kerusakan.php"); // Path Diperbaiki
             exit;
         } else {
             echo "<script>alert('Gagal memperbarui data. Silakan coba lagi.'); window.history.back();</script>";
@@ -31,14 +31,15 @@ if(isset($_POST['ubah'])){
     }
 }
 
+
 // Logika untuk MENGAMBIL data yang akan diedit dari database
-if(!isset($_GET['id_gejala'])) {
-    header("location: gejala.php"); // Path Diperbaiki
+if(!isset($_GET['id_penyakit'])) {
+    header("location: kerusakan.php"); // Path Diperbaiki
     exit;
 }
-$id_edit = $_GET['id_gejala'];
+$id_edit = $_GET['id_penyakit'];
 
-$sql_select = "SELECT * FROM tbl_gejala WHERE id_gejala = ?";
+$sql_select = "SELECT * FROM tbl_penyakit WHERE id_penyakit = ?";
 $stmt_select = mysqli_prepare($koneksi, $sql_select);
 mysqli_stmt_bind_param($stmt_select, "s", $id_edit);
 mysqli_stmt_execute($stmt_select);
@@ -60,7 +61,7 @@ $admin = mysqli_fetch_array($data_admin);
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Edit Data Gejala - Admin</title>
+    <title>Edit Data Kerusakan - Admin</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
@@ -91,8 +92,8 @@ $admin = mysqli_fetch_array($data_admin);
             <li class="nav-item"><a class="nav-link" href="index.php"><i class="fas fa-fw fa-tachometer-alt"></i><span>Dashboard</span></a></li>
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Manajemen Data</div>
-            <li class="nav-item"><a class="nav-link" href="kerusakan.php"><i class="fas fa-fw fa-oil-can"></i><span>Data Kerusakan</span></a></li>
-            <li class="nav-item active"><a class="nav-link" href="gejala.php"><i class="fas fa-fw fa-list-alt"></i><span>Data Gejala</span></a></li>
+            <li class="nav-item active"><a class="nav-link" href="kerusakan.php"><i class="fas fa-fw fa-oil-can"></i><span>Data Kerusakan</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="gejala.php"><i class="fas fa-fw fa-list-alt"></i><span>Data Gejala</span></a></li>
             <li class="nav-item"><a class="nav-link" href="aturan.php"><i class="fas fa-fw fa-cogs"></i><span>Basis Aturan</span></a></li>
             <li class="nav-item"><a class="nav-link" href="riwayat.php"><i class="fas fa-fw fa-history"></i><span>Riwayat Diagnosa</span></a></li>
             <hr class="sidebar-divider d-none d-md-block">
@@ -115,31 +116,24 @@ $admin = mysqli_fetch_array($data_admin);
                     </ul>
                 </nav>
                 <div class="container-fluid">
-                    <h1 class="h3 mb-4 text-gray-800">Form Edit Data Gejala</h1>
+                    <h1 class="h3 mb-4 text-gray-800">Form Edit Data Kerusakan</h1>
                     <div class="card shadow mb-4">
                         <div class="card-body">
-                            <form method="POST" action="editgejala.php?id_gejala=<?= htmlspecialchars($d['id_gejala']); ?>">
+                            <form method="POST" action="editkerusakan.php?id_penyakit=<?= htmlspecialchars($d['id_penyakit']); ?>">
                                 <div class="form-group">
-                                    <label for="id_gejala">Kode Gejala</label>
-                                    <input type="text" class="form-control" id="id_gejala" name="id_gejala" value="<?= htmlspecialchars($d['id_gejala']); ?>" readonly>
+                                    <label for="id_penyakit">Kode Kerusakan</label>
+                                    <input type="text" class="form-control" id="id_penyakit" name="id_penyakit" value="<?= htmlspecialchars($d['id_penyakit']); ?>" readonly>
                                 </div>
                                 <div class="form-group">
-                                    <label for="nama_gejala">Nama Gejala</label>
-                                    <input type="text" class="form-control" id="nama_gejala" name="nama_gejala" value="<?= htmlspecialchars($d['nama_gejala']); ?>" required>
+                                    <label for="nama_penyakit">Nama Kerusakan</label>
+                                    <input type="text" class="form-control" id="nama_penyakit" name="nama_penyakit" value="<?= htmlspecialchars($d['nama_penyakit']); ?>" required>
                                 </div>
                                 <div class="form-group">
-                                    <label for="kategori">Kategori Area</label>
-                                    <?php $current_kategori = isset($d['kategori']) ? $d['kategori'] : 'Lainnya'; ?>
-                                    <select class="form-control" id="kategori" name="kategori">
-                                        <option value="Kelistrikan" <?= $current_kategori == 'Kelistrikan' ? 'selected' : '' ?>>Kelistrikan</option>
-                                        <option value="Mesin" <?= $current_kategori == 'Mesin' ? 'selected' : '' ?>>Mesin</option>
-                                        <option value="Bahan Bakar" <?= $current_kategori == 'Bahan Bakar' ? 'selected' : '' ?>>Bahan Bakar</option>
-                                        <option value="CVT" <?= $current_kategori == 'CVT' ? 'selected' : '' ?>>Transmisi / CVT</option>
-                                        <option value="Lainnya" <?= $current_kategori == 'Lainnya' ? 'selected' : '' ?>>Lainnya</option>
-                                    </select>
+                                    <label for="solusi">Solusi</label>
+                                    <textarea class="form-control" id="solusi" name="solusi" rows="4" required><?= htmlspecialchars($d['solusi']); ?></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-primary" name="ubah">Simpan Perubahan</button>
-                                <a href="gejala.php" class="btn btn-secondary">Batal</a>
+                                <a href="kerusakan.php" class="btn btn-secondary">Batal</a>
                             </form>
                         </div>
                     </div>
@@ -156,7 +150,7 @@ $admin = mysqli_fetch_array($data_admin);
     </div>
 
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
+         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Siap untuk Keluar?</h5>

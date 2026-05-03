@@ -9,9 +9,32 @@ include '../admin/koneksi.php';
 
 $simpan = mysqli_query($koneksi, "INSERT into user(username,jeniskelamin, email, password, role) VALUES('$username','$jeniskelamin','$email','$password','$role')");
 if($simpan){
-    echo"<script>alert('Berhasil Register');document.location.href='../login.php';</script>";
-
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script>
+        setTimeout(function() {
+            Swal.fire({
+                title: 'Berhasil',
+                text: 'Berhasil Register',
+                icon: 'success',
+                confirmButtonColor: '#4e73df'
+            }).then(() => {
+                window.location.href='../login.php';
+            });
+        }, 100);
+    </script>";
 }else {
-    echo"<script>alert('Gagal Register');document.location.href='../register.php';</script>";
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script>
+        setTimeout(function() {
+            Swal.fire({
+                title: 'Gagal',
+                text: 'Gagal Register',
+                icon: 'error',
+                confirmButtonColor: '#4e73df'
+            }).then(() => {
+                window.location.href='../register.php';
+            });
+        }, 100);
+    </script>";
 }
 ?>

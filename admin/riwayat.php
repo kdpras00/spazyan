@@ -18,13 +18,18 @@ $admin = mysqli_fetch_array($data_admin);
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Manajemen Data Gejala - Admin</title>
+    <title>Riwayat Diagnosa Pengguna - Admin</title>
+
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
     <link href="css/sb-admin-2.min.css" rel="stylesheet">
     <link href="vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
     <link rel="stylesheet" media="screen" href="https://fontlibrary.org/face/baron" type="text/css"/>
     <style>
+        .gejala-list {
+            background-color: #f8f9fc;
+            border-left: 3px solid #4e73df;
+        }
         .sidebar-brand-text {
             font-family: 'BaronNeueRegular', sans-serif !important;
             line-height: 0.8 !important;
@@ -56,9 +61,9 @@ $admin = mysqli_fetch_array($data_admin);
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Manajemen Data</div>
             <li class="nav-item"><a class="nav-link" href="kerusakan.php"><i class="fas fa-fw fa-oil-can"></i><span>Data Kerusakan</span></a></li>
-            <li class="nav-item active"><a class="nav-link" href="gejala.php"><i class="fas fa-fw fa-list-alt"></i><span>Data Gejala</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="gejala.php"><i class="fas fa-fw fa-list-alt"></i><span>Data Gejala</span></a></li>
             <li class="nav-item"><a class="nav-link" href="aturan.php"><i class="fas fa-fw fa-cogs"></i><span>Basis Aturan</span></a></li>
-            <li class="nav-item"><a class="nav-link" href="riwayat.php"><i class="fas fa-fw fa-history"></i><span>Riwayat Diagnosa</span></a></li>
+            <li class="nav-item active"><a class="nav-link" href="riwayat.php"><i class="fas fa-fw fa-history"></i><span>Riwayat Diagnosa</span></a></li>
             <hr class="sidebar-divider d-none d-md-block">
             <div class="text-center d-none d-md-inline"><button class="rounded-circle border-0" id="sidebarToggle"></button></div>
         </ul>
@@ -79,64 +84,87 @@ $admin = mysqli_fetch_array($data_admin);
                     </ul>
                 </nav>
                 <div class="container-fluid">
-                    <h1 class="h3 mb-2 text-gray-800">Manajemen Data Gejala</h1>
-                    <p class="mb-4">Halaman ini digunakan untuk mengelola semua data gejala yang menjadi dasar diagnosis dalam sistem.</p>
+                    <h1 class="h3 mb-2 text-gray-800">Riwayat Diagnosa Pengguna</h1>
+                    <p class="mb-4">Berikut adalah seluruh data riwayat diagnosa yang telah dilakukan oleh pengguna pada sistem.</p>
 
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <a href="action/tambahgejala.php" class="btn btn-primary"><i class="fas fa-plus me-2"></i> Tambah Data Gejala</a>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Riwayat</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <tr>
-                                            <th>Kode Gejala</th>
-                                            <th>Nama Gejala</th>
-                                            <th>Kategori</th>
-                                            <th width="100px">Aksi</th>
+                                            <th>No</th>
+                                            <th>Tanggal</th>
+                                            <th>Pengguna</th>
+                                            <th>Hasil Kerusakan</th>
+                                            <th>Detail Gejala</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        // Gunakan pengecekan manual atau fallback di array fetch
-                                        $data = mysqli_query($koneksi, "SELECT * FROM tbl_gejala");
-                                        while($d = mysqli_fetch_array($data)){
+                                        // Query untuk mengambil semua riwayat
+                                        $query = "SELECT hd.id_hasil, hd.tanggal, hd.gejala_terpilih, p.nama_penyakit, u.username
+                                                  FROM hasil_diagnosa hd
+                                                  JOIN tbl_penyakit p ON hd.id_penyakit = p.id_penyakit
+                                                  JOIN user u ON hd.id_pas = u.user_id
+                                                  ORDER BY hd.tanggal DESC";
+                                        $result = mysqli_query($koneksi, $query);
+                                        $no = 0;
+                                        while ($data = mysqli_fetch_assoc($result)) {
+                                            $no++;
                                         ?>
                                         <tr>
-                                            <td><?= htmlspecialchars($d['id_gejala']); ?></td>
-                                            <td><?= htmlspecialchars($d['nama_gejala']); ?></td>
-                                            <td>
-                                                <span class="badge badge-info"><?= isset($d['kategori']) ? htmlspecialchars($d['kategori']) : 'Lainnya'; ?></span>
+                                            <td><?= $no ?></td>
+                                            <td><?= date('d M Y, H:i', strtotime($data['tanggal'])) ?></td>
+                                            <td><?= htmlspecialchars($data['username']) ?></td>
+                                            <td><?= htmlspecialchars($data['nama_penyakit']) ?></td>
+                                            <td class="text-center">
+                                                <button class="btn btn-info btn-sm" data-toggle="collapse" data-target="#detail-<?= $data['id_hasil'] ?>">
+                                                    <i class="fas fa-eye"></i> Lihat
+                                                </button>
                                             </td>
                                             <td>
                                                 <div class="action-btns">
-                                                    <a href="editgejala.php?id_gejala=<?= $d['id_gejala'];?>" class="btn btn-warning btn-sm" title="Edit">
-                                                        <i class="fas fa-edit"></i>
-                                                    </a>
-                                                    <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapusModal<?= $d['id_gejala']; ?>" title="Hapus">
+                                                    <a href="#" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#hapusModal<?= $data['id_hasil'] ?>">
                                                         <i class="fas fa-trash"></i>
                                                     </a>
                                                 </div>
                                             </td>
                                         </tr>
-                                        
-                                        <div class="modal fade" id="hapusModal<?= $d['id_gejala']; ?>" tabindex="-1" role="dialog">
+                                        <tr class="collapse" id="detail-<?= $data['id_hasil'] ?>">
+                                            <td colspan="6">
+                                                <div class="p-3 gejala-list">
+                                                    <h6 class="font-weight-bold">Gejala yang dipilih:</h6>
+                                                    <ul>
+                                                        <?php
+                                                        $gejala_ids_string = "'" . str_replace(",", "','", $data['gejala_terpilih']) . "'";
+                                                        $sql_gejala = "SELECT nama_gejala FROM tbl_gejala WHERE id_gejala IN ($gejala_ids_string)";
+                                                        $result_gejala = mysqli_query($koneksi, $sql_gejala);
+                                                        while ($gejala = mysqli_fetch_assoc($result_gejala)) {
+                                                            echo "<li>" . htmlspecialchars($gejala['nama_gejala']) . "</li>";
+                                                        }
+                                                        ?>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <div class="modal fade" id="hapusModal<?= $data['id_hasil'] ?>" tabindex="-1" role="dialog">
                                             <div class="modal-dialog" role="document">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title">Konfirmasi Penghapusan</h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
+                                                        <h5 class="modal-title">Konfirmasi Hapus Riwayat</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <p>Apakah Anda yakin ingin menghapus gejala:</p>
-                                                        <strong><?= htmlspecialchars($d['nama_gejala']); ?></strong>?
+                                                        <p>Anda yakin ingin menghapus riwayat diagnosa oleh <strong><?= htmlspecialchars($data['username']) ?></strong> pada tanggal <?= date('d M Y', strtotime($data['tanggal'])) ?>?</p>
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                                        <a href="action/hapusgejala.php?id_gejala=<?= $d['id_gejala']; ?>" class="btn btn-danger">Ya, Hapus</a>
+                                                        <a href="action/hapus_riwayat.php?id=<?= $data['id_hasil'] ?>" class="btn btn-danger">Ya, Hapus</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -148,7 +176,7 @@ $admin = mysqli_fetch_array($data_admin);
                         </div>
                     </div>
                 </div>
-                </div>
+            </div>
             <footer class="sticky-footer bg-white">
                 <div class="container my-auto">
                     <div class="copyright text-center my-auto">
@@ -158,7 +186,6 @@ $admin = mysqli_fetch_array($data_admin);
             </footer>
         </div>
     </div>
-
     <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

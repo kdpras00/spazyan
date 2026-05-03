@@ -2,7 +2,7 @@
 
 session_start();
 
-include '../eadmin/koneksi.php';
+include '../admin/koneksi.php';
 
 $email = $_POST['email'];
 

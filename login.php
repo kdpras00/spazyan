@@ -28,7 +28,7 @@
     <div class="container">
 
         <!-- Outer Row -->
-        <div class="row justify-content-center">
+        <div class="row justify-content-center align-items-center min-vh-100">
 
             <div class="col-lg-6">
 
@@ -85,6 +85,15 @@
     <script src="js/sb-admin-2.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
     <script>
+        // Cek jika ada pesan timeout dari URL
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('msg') === 'timeout') {
+            Swal.fire({
+                title: 'Sesi Berakhir',
+                text: 'Sesi Anda telah berakhir karena tidak ada aktivitas selama 30 menit. Silakan login kembali.',
+                icon: 'warning'
+            });
+        }
        
         //get data login
         $('#login').click(function(e){

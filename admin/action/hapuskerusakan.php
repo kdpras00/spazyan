@@ -2,21 +2,21 @@
     <script src="../js/sweetalert2.all.min.js"></script>
 </html>
 <?php
-$id = $_GET['id_gejala'];
+$id = $_GET['id_penyakit'];
 
 include '../koneksi.php';
 
 
-$hapus = mysqli_query($koneksi, "DELETE FROM tbl_gejala WHERE id_gejala = '$id' ");
+$hapus = mysqli_query($koneksi, "DELETE FROM tbl_penyakit WHERE id_penyakit = '$id' ");
 if($hapus){
-    echo"<script>
+    echo "<script>
     Swal.fire({
       icon: 'success',
       title: 'Berhasil Hapus Data',
       showConfirmButton: false,
       timer: 1500
     }).then(function() {
-      window.location.href = '../gejala.php';
+      window.location.href = '../kerusakan.php';
     });
   </script>";
 
@@ -28,7 +28,7 @@ if($hapus){
       showConfirmButton: false,
       timer: 1500
     }).then(function() {
-      window.location.href = '../gejala.php';
+      window.location.href = '../kerusakan.php';
     });
   </script>";
 }
