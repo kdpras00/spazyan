@@ -1,0 +1,32 @@
+name: 🚀 Deploy Native PHP (SSH)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY_PRIVATE }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          port: 2223
+          script: |
+            # Ganti path ini sesuai dengan folder domain project Spazyan kamu di server
+            cd ~/public_html/domains/nama-domain-spazyan.com
+          
+            echo "📦 Pull latest code from GitHub..."
+            git fetch origin
+            git reset --hard origin/main
+          
+            echo "✅ Deploy finished!"
