@@ -23,7 +23,7 @@ jobs:
           port: 2223
           script: |
             # Ganti path ini sesuai dengan folder domain project Spazyan kamu di server
-            cd ~/public_html/domains/nama-domain-spazyan.com
+            cd ~/public_html/domains/spazyan.my.id
           
             echo "📦 Pull latest code from GitHub..."
             git fetch origin
