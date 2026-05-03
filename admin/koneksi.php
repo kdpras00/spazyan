@@ -1,8 +1,8 @@
 <?php
-$koneksi = mysqli_connect ("127.0.0.1","root","","spazyan");
+$koneksi = mysqli_connect("localhost", "kure8737_spazyan", "Panggung00@", "kure8737_spazyan");
 
-if(mysqli_connect_error()){
-    echo "Koneksi Database Gagal : .mysqli_connect_error()";
+if (!$koneksi) {
+    die("Koneksi Database Gagal: " . mysqli_connect_error());
 }
 
 // Cek timeout session secara global
@@ -12,5 +12,4 @@ $auth_path = $is_admin_dir ? '../auth_timeout.php' : 'auth_timeout.php';
 if (file_exists($auth_path)) {
     include $auth_path;
 }
-
 ?>
