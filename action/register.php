@@ -1,9 +1,28 @@
 <?php
-$username = $_POST['username'];
-$jeniskelamin = $_POST['jeniskelamin'];
-$email = $_POST['email'];
-$password = md5($_POST['password']);
+$username = $_POST['username'] ?? '';
+$jeniskelamin = $_POST['jeniskelamin'] ?? '';
+$email = $_POST['email'] ?? '';
+$passwordRaw = $_POST['password'] ?? '';
 $role = 2;
+
+if(empty($username) || empty($email) || empty($passwordRaw)) {
+    echo "<script src='https://cdn.jsdelivr.net/npm/sweetalert2@11'></script>";
+    echo "<script>
+        setTimeout(function() {
+            Swal.fire({
+                title: 'Gagal',
+                text: 'Data tidak boleh kosong',
+                icon: 'error',
+                confirmButtonColor: '#4e73df'
+            }).then(() => {
+                window.location.href='../register.php';
+            });
+        }, 100);
+    </script>";
+    exit;
+}
+
+$password = md5($passwordRaw);
 
 include '../admin/koneksi.php';
 

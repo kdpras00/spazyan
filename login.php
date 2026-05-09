@@ -101,6 +101,15 @@
             let email = $('#email').val();
             let password = $('#password').val();
 
+            if (!email || !password) {
+                Swal.fire({
+                    title: 'Peringatan',
+                    text: 'Email dan password tidak boleh kosong!',
+                    icon: 'warning'
+                });
+                return;
+            }
+
             $.ajax({
                 method : 'post',
                 url : 'action/proseslogin.php',

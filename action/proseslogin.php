@@ -4,9 +4,15 @@ session_start();
 
 include '../admin/koneksi.php';
 
-$email = $_POST['email'];
+$email = $_POST['email'] ?? '';
+$passwordRaw = $_POST['password'] ?? '';
 
-$password = md5($_POST['password']);
+if(empty($email) || empty($passwordRaw)) {
+    echo 'failed';
+    exit;
+}
+
+$password = md5($passwordRaw);
 
 // menyeleksi data admin dengan email dan password yang sesuai
 $data = mysqli_query($koneksi,"select * from user where email='$email' and password='$password'");

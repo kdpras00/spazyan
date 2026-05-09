@@ -44,7 +44,7 @@
                                 <div class="form-group">
                                 <label for="nama">Nama Lengkap :</label>
                                     <input type="text" class="form-control form-control-user" id="username"
-                                    name="username" placeholder="Full Name">
+                                    name="username" placeholder="Full Name" required>
                                 </div>
                                 <div class="form-group">
                                 <label for="jeniskelamin">Jenis Kelamin :</label>
@@ -56,12 +56,12 @@
                                 <div class="form-group">
                                 <label for="gender">Email :</label>
                                     <input type="email" class="form-control form-control-user" id="email"
-                                    name="email"  placeholder="Email Address">
+                                    name="email"  placeholder="Email Address" required>
                                 </div>
                                 <div class="form-group">
                                 <label for="gender">Password :</label>
                                     <input type="password" class="form-control form-control-user" id="password"
-                                    name="password" placeholder="Password">
+                                    name="password" placeholder="Password" required>
                                 </div>
                                 <div>
                                 <button type="submit" class="btn btn-primary btn-user btn-block">Daftar</button>
