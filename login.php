@@ -48,8 +48,13 @@
                                                 placeholder="Masukan Email Address...">
                                         </div>
                                         <div class="form-group">
-                                            <input type="password" class="form-control form-control-user"
-                                                id="password" name="password" placeholder="Password">
+                                            <div style="position: relative;">
+                                                <input type="password" class="form-control form-control-user"
+                                                    id="password" name="password" placeholder="Password" style="padding-right: 50px;">
+                                                <span id="togglePassword" style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #6e707e;">
+                                                    <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                                                </span>
+                                            </div>
                                         </div>
                                         <div class="form-group">
                                         </div>
@@ -85,6 +90,19 @@
     <script src="js/sb-admin-2.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
     <script>
+        // Toggle password visibility
+        $('#togglePassword').click(function() {
+            let passwordInput = $('#password');
+            let icon = $(this).find('i');
+            if (passwordInput.attr('type') === 'password') {
+                passwordInput.attr('type', 'text');
+                icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            } else {
+                passwordInput.attr('type', 'password');
+                icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            }
+        });
+
         // Cek jika ada pesan timeout dari URL
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('msg') === 'timeout') {
