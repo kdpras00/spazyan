@@ -19,11 +19,22 @@ if(isset($_POST['simpan'])){
         echo "<script>alert('Nama kerusakan dan solusi tidak boleh kosong!'); window.history.back();</script>";
     } else {
         // Menggunakan prepared statement untuk keamanan
-        $sql = "INSERT INTO tbl_penyakit (id_penyakit, nama_penyakit, solusi) VALUES (?, ?, ?)";
+        $sql = "INSERT INTO tbl_penyakit (id_penyakit, nama_penyakit) VALUES (?, ?)";
         $stmt = mysqli_prepare($koneksi, $sql);
-        mysqli_stmt_bind_param($stmt, "sss", $id_penyakit, $nama_penyakit, $solusi);
+        mysqli_stmt_bind_param($stmt, "ss", $id_penyakit, $nama_penyakit);
 
         if(mysqli_stmt_execute($stmt)){
+            $baris_solusi = explode("\n", $solusi);
+            $sql_solusi = "INSERT INTO tbl_solusi (id_penyakit, solusi) VALUES (?, ?)";
+            $stmt_solusi = mysqli_prepare($koneksi, $sql_solusi);
+            foreach ($baris_solusi as $baris) {
+                $baris = trim($baris);
+                if (!empty($baris)) {
+                    mysqli_stmt_bind_param($stmt_solusi, "ss", $id_penyakit, $baris);
+                    mysqli_stmt_execute($stmt_solusi);
+                }
+            }
+
             $_SESSION['pesan_sukses'] = "Data kerusakan baru berhasil disimpan.";
             header("Location: ../kerusakan.php");
             exit;

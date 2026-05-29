@@ -226,7 +226,7 @@ include "admin/koneksi.php";
             $penyakit_data = [];
             if (!empty($all_ids)) {
                 $in_str = "'" . implode("','", $all_ids) . "'";
-                $res_p  = mysqli_query($koneksi, "SELECT * FROM tbl_penyakit WHERE id_penyakit IN ($in_str)");
+                $res_p  = mysqli_query($koneksi, "SELECT p.*, GROUP_CONCAT(s.solusi SEPARATOR '|||') as solusi_list FROM tbl_penyakit p LEFT JOIN tbl_solusi s ON p.id_penyakit = s.id_penyakit WHERE p.id_penyakit IN ($in_str) GROUP BY p.id_penyakit");
                 while ($p = mysqli_fetch_assoc($res_p)) {
                     $penyakit_data[$p['id_penyakit']] = $p;
                 }
@@ -276,7 +276,14 @@ include "admin/koneksi.php";
 
                     echo "  <hr class='my-3'>";
                     echo "  <h6 class='text-success font-weight-bold d-flex align-items-center'><i class='fa fa-tools icon-gap'></i> SOLUSI PERBAIKAN</h6>";
-                    echo "  <p class='mb-0'>" . nl2br(htmlspecialchars($penyakit['solusi'])) . "</p>";
+                    echo "  <ul class='mb-0 pl-3'>";
+                    $solusi_array = explode('|||', $penyakit['solusi_list'] ?? '');
+                    foreach($solusi_array as $sol) {
+                        if(trim($sol) !== '') {
+                            echo "<li>" . htmlspecialchars(trim($sol)) . "</li>";
+                        }
+                    }
+                    echo "  </ul>";
                     echo "  </div>";
                     echo "</div>";
                 }

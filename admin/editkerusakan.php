@@ -17,11 +17,22 @@ if(isset($_POST['ubah'])){
     if(empty($nama_penyakit) || empty($solusi)) {
         echo "<script>alert('Nama kerusakan dan solusi tidak boleh kosong!'); window.history.back();</script>";
     } else {
-        $sql = "UPDATE tbl_penyakit SET nama_penyakit = ?, solusi = ? WHERE id_penyakit = ?";
+        $sql = "UPDATE tbl_penyakit SET nama_penyakit = ? WHERE id_penyakit = ?";
         $stmt = mysqli_prepare($koneksi, $sql);
-        mysqli_stmt_bind_param($stmt, "sss", $nama_penyakit, $solusi, $id_penyakit);
+        mysqli_stmt_bind_param($stmt, "ss", $nama_penyakit, $id_penyakit);
 
         if(mysqli_stmt_execute($stmt)){
+            mysqli_query($koneksi, "DELETE FROM tbl_solusi WHERE id_penyakit = '$id_penyakit'");
+            $baris_solusi = explode("\n", $solusi);
+            $sql_solusi = "INSERT INTO tbl_solusi (id_penyakit, solusi) VALUES (?, ?)";
+            $stmt_solusi = mysqli_prepare($koneksi, $sql_solusi);
+            foreach ($baris_solusi as $baris) {
+                $baris = trim($baris);
+                if (!empty($baris)) {
+                    mysqli_stmt_bind_param($stmt_solusi, "ss", $id_penyakit, $baris);
+                    mysqli_stmt_execute($stmt_solusi);
+                }
+            }
             $_SESSION['pesan_sukses'] = "Data kerusakan berhasil diperbarui.";
             header("Location: kerusakan.php"); // Path Diperbaiki
             exit;
@@ -39,7 +50,7 @@ if(!isset($_GET['id_penyakit'])) {
 }
 $id_edit = $_GET['id_penyakit'];
 
-$sql_select = "SELECT * FROM tbl_penyakit WHERE id_penyakit = ?";
+$sql_select = "SELECT p.*, GROUP_CONCAT(s.solusi SEPARATOR '\n') as solusi FROM tbl_penyakit p LEFT JOIN tbl_solusi s ON p.id_penyakit = s.id_penyakit WHERE p.id_penyakit = ? GROUP BY p.id_penyakit";
 $stmt_select = mysqli_prepare($koneksi, $sql_select);
 mysqli_stmt_bind_param($stmt_select, "s", $id_edit);
 mysqli_stmt_execute($stmt_select);
@@ -130,7 +141,7 @@ $admin = mysqli_fetch_array($data_admin);
                                 </div>
                                 <div class="form-group">
                                     <label for="solusi">Solusi</label>
-                                    <textarea class="form-control" id="solusi" name="solusi" rows="4" required><?= htmlspecialchars($d['solusi']); ?></textarea>
+                                    <textarea class="form-control" id="solusi" name="solusi" rows="4" required><?= htmlspecialchars($d['solusi'] ?? ''); ?></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-primary" name="ubah">Simpan Perubahan</button>
                                 <a href="kerusakan.php" class="btn btn-secondary">Batal</a>

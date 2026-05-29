@@ -99,7 +99,7 @@ $admin = mysqli_fetch_array($data_admin);
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $data = mysqli_query($koneksi, "SELECT * FROM tbl_penyakit");
+                                        $data = mysqli_query($koneksi, "SELECT p.*, GROUP_CONCAT(s.solusi SEPARATOR '\n') as solusi FROM tbl_penyakit p LEFT JOIN tbl_solusi s ON p.id_penyakit = s.id_penyakit GROUP BY p.id_penyakit");
                                         while($d = mysqli_fetch_array($data)){
                                         ?>
                                         <tr>
@@ -108,7 +108,7 @@ $admin = mysqli_fetch_array($data_admin);
                                             <td>
                                                 <?php
                                                 // Meringkas teks solusi jika terlalu panjang
-                                                $solusi = htmlspecialchars($d['solusi']);
+                                                $solusi = htmlspecialchars($d['solusi'] ?? '');
                                                 if (strlen($solusi) > 100) {
                                                     echo substr($solusi, 0, 100) . '...';
                                                 } else {
