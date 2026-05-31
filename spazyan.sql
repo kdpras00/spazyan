@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.3
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Waktu pembuatan: 10 Bulan Mei 2026 pada 14.22
--- Versi server: 10.4.28-MariaDB
--- Versi PHP: 8.2.4
+-- Host: 127.0.0.1
+-- Waktu pembuatan: 29 Bulan Mei 2026 pada 16.21
+-- Versi server: 8.2.0
+-- Versi PHP: 8.5.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `spazyan`
+-- Basis data: `spazyan`
 --
 
 -- --------------------------------------------------------
@@ -28,13 +28,13 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `hasil_diagnosa` (
-  `id_hasil` int(10) NOT NULL,
-  `id_pas` int(10) NOT NULL,
-  `id_penyakit` varchar(20) NOT NULL,
-  `persentase` decimal(5,2) DEFAULT 0.00,
-  `gejala_terpilih` text DEFAULT NULL,
-  `gejala_cocok` text DEFAULT NULL,
-  `tanggal` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `id_hasil` int NOT NULL,
+  `id_pas` int NOT NULL,
+  `id_penyakit` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `persentase` decimal(5,2) DEFAULT '0.00',
+  `gejala_terpilih` text COLLATE utf8mb4_general_ci,
+  `gejala_cocok` text COLLATE utf8mb4_general_ci,
+  `tanggal` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -43,7 +43,8 @@ CREATE TABLE `hasil_diagnosa` (
 
 INSERT INTO `hasil_diagnosa` (`id_hasil`, `id_pas`, `id_penyakit`, `persentase`, `gejala_terpilih`, `gejala_cocok`, `tanggal`) VALUES
 (288, 11, 'K01', 100.00, 'G01,G02,G03', NULL, '2026-05-10 12:20:18'),
-(289, 11, 'K02', 100.00, 'G04,G06,G05', NULL, '2026-05-10 12:21:19');
+(289, 11, 'K02', 100.00, 'G04,G06,G05', NULL, '2026-05-10 12:21:19'),
+(290, 11, 'K01', 100.00, 'G01,G02,G03', NULL, '2026-05-29 16:00:32');
 
 -- --------------------------------------------------------
 
@@ -52,9 +53,9 @@ INSERT INTO `hasil_diagnosa` (`id_hasil`, `id_pas`, `id_penyakit`, `persentase`,
 --
 
 CREATE TABLE `tbl_basis_aturan` (
-  `id_aturan` int(11) NOT NULL,
-  `id_penyakit` varchar(5) NOT NULL,
-  `id_gejala` varchar(5) NOT NULL
+  `id_aturan` int NOT NULL,
+  `id_penyakit` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_gejala` varchar(5) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -114,9 +115,9 @@ INSERT INTO `tbl_basis_aturan` (`id_aturan`, `id_penyakit`, `id_gejala`) VALUES
 --
 
 CREATE TABLE `tbl_gejala` (
-  `id_gejala` varchar(5) NOT NULL,
-  `nama_gejala` varchar(255) NOT NULL,
-  `kategori` varchar(50) DEFAULT 'Lainnya'
+  `id_gejala` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_gejala` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `kategori` varchar(50) COLLATE utf8mb4_general_ci DEFAULT 'Lainnya'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -169,29 +170,59 @@ INSERT INTO `tbl_gejala` (`id_gejala`, `nama_gejala`, `kategori`) VALUES
 --
 
 CREATE TABLE `tbl_penyakit` (
-  `id_penyakit` varchar(5) NOT NULL,
-  `nama_penyakit` varchar(255) NOT NULL,
-  `solusi` text NOT NULL
+  `id_penyakit` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
+  `nama_penyakit` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `tbl_penyakit`
 --
 
-INSERT INTO `tbl_penyakit` (`id_penyakit`, `nama_penyakit`, `solusi`) VALUES
-('K01', 'Sekering', 'Ganti sekering yang putus dengan ukuran yang sama..\'...'),
-('K02', 'Aki', 'Isi ulang aki, cek sistem pengisian, ganti aki jika soak.'),
-('K03', 'Busi', 'Bersihkan busi, setel celah busi, ganti busi jika sudah aus.'),
-('K04', 'Fuel Pump', 'Periksa kabel pompa, bersihkan filter, ganti pompa jika rusak.'),
-('K05', 'Injektor', 'Bersihkan injektor dengan cairan khusus atau servis injektor.'),
-('K06', 'Koil/Spul/ECM', 'Periksa kabel koil, ganti koil/spul/ECM bila rusak.'),
-('K07', 'Piston', 'Bongkar mesin, ganti piston dan ring piston.'),
-('K08', 'Bahan Bakar', 'Bersihkan tangki, ganti filter bahan bakar, gunakan bahan bakar berkualitas.'),
-('K09', 'Bocor Kompresi', 'Setel ulang klep, ganti gasket kepala silinder, lakukan overhoule jika perlu.'),
-('K10', 'Pengapian', 'Periksa CDI, kabel pengapian, ganti komponen pengapian yang rusak.'),
-('K11', 'CVT (Continuously Variable Transmission)', 'Bersihkan CVT, cek kondisi roller dan v-belt, ganti jika aus, lumasi bagian yang perlu.'),
-('K12', 'Sensor TPS (Throttle Position Sensor)', 'Bersihkan sensor TPS, cek konektor dan kabel, lakukan kalibrasi sensor, ganti sensor jika rusak.,,,'),
-('K13', '22', '11');
+INSERT INTO `tbl_penyakit` (`id_penyakit`, `nama_penyakit`) VALUES
+('K01', 'Sekering'),
+('K02', 'Aki'),
+('K03', 'Busi'),
+('K04', 'Fuel Pump'),
+('K05', 'Injektor'),
+('K06', 'Koil/Spul/ECM'),
+('K07', 'Piston'),
+('K08', 'Bahan Bakar'),
+('K09', 'Bocor Kompresi'),
+('K10', 'Pengapian'),
+('K11', 'CVT (Continuously Variable Transmission)'),
+('K12', 'Sensor TPS (Throttle Position Sensor)'),
+('K13', '22');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `tbl_solusi`
+--
+
+CREATE TABLE `tbl_solusi` (
+  `id_solusi` int NOT NULL,
+  `id_penyakit` varchar(5) COLLATE utf8mb4_general_ci NOT NULL,
+  `solusi` text COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `tbl_solusi`
+--
+
+INSERT INTO `tbl_solusi` (`id_solusi`, `id_penyakit`, `solusi`) VALUES
+(1, 'K01', 'Ganti sekering yang putus dengan ukuran yang sama..\'...'),
+(2, 'K02', 'Isi ulang aki, cek sistem pengisian, ganti aki jika soak.'),
+(3, 'K03', 'Bersihkan busi, setel celah busi, ganti busi jika sudah aus.'),
+(4, 'K04', 'Periksa kabel pompa, bersihkan filter, ganti pompa jika rusak.'),
+(5, 'K05', 'Bersihkan injektor dengan cairan khusus atau servis injektor.'),
+(6, 'K06', 'Periksa kabel koil, ganti koil/spul/ECM bila rusak.'),
+(7, 'K07', 'Bongkar mesin, ganti piston dan ring piston.'),
+(8, 'K08', 'Bersihkan tangki, ganti filter bahan bakar, gunakan bahan bakar berkualitas.'),
+(9, 'K09', 'Setel ulang klep, ganti gasket kepala silinder, lakukan overhoule jika perlu.'),
+(10, 'K10', 'Periksa CDI, kabel pengapian, ganti komponen pengapian yang rusak.'),
+(11, 'K11', 'Bersihkan CVT, cek kondisi roller dan v-belt, ganti jika aus, lumasi bagian yang perlu.'),
+(12, 'K12', 'Bersihkan sensor TPS, cek konektor dan kabel, lakukan kalibrasi sensor, ganti sensor jika rusak.,,,'),
+(13, 'K13', '11');
 
 -- --------------------------------------------------------
 
@@ -200,12 +231,12 @@ INSERT INTO `tbl_penyakit` (`id_penyakit`, `nama_penyakit`, `solusi`) VALUES
 --
 
 CREATE TABLE `user` (
-  `user_id` int(11) NOT NULL,
-  `username` varchar(20) NOT NULL,
-  `jeniskelamin` varchar(20) NOT NULL,
-  `email` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
-  `role` varchar(10) NOT NULL
+  `user_id` int NOT NULL,
+  `username` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `jeniskelamin` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `password` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `role` varchar(10) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -216,14 +247,10 @@ INSERT INTO `user` (`user_id`, `username`, `jeniskelamin`, `email`, `password`, 
 (1, 'admin', '', 'admin@gmail.com', '21232f297a57a5a743894a0e4a801fc3', '1'),
 (11, 'user', 'Laki-Laki', 'user@gmail.com', 'ee11cbb19052e40b07aac0ca060c23ee', '2'),
 (12, 'admin', 'Laki-Laki', 'yunus@gmail.com', 'ee11cbb19052e40b07aac0ca060c23ee', '2'),
-(14, 'admin', 'Laki-Laki', 'yunus@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '2'),
-(15, 'kurniawandwipras', 'Laki-Laki', 'kdpras00@gmail.com', '2ffdd8a672f09ca28146a5d9b39c293a', '2'),
-(16, 'pras', 'Laki-Laki', 'kdpras00@gmail.com', '2ffdd8a672f09ca28146a5d9b39c293a', '2'),
-(17, '', 'Laki-Laki', '', 'd41d8cd98f00b204e9800998ecf8427e', '2'),
-(18, 'eka', 'Laki-Laki', 'eka@gmail.com', '75fd4afa459279c67abe8329eae363ba', '2');
+(14, 'admin', 'Laki-Laki', 'yunus@gmail.com', '827ccb0eea8a706c4c34a16891f84e7b', '2');
 
 --
--- Indexes for dumped tables
+-- Indeks untuk tabel yang dibuang
 --
 
 --
@@ -251,6 +278,13 @@ ALTER TABLE `tbl_penyakit`
   ADD PRIMARY KEY (`id_penyakit`);
 
 --
+-- Indeks untuk tabel `tbl_solusi`
+--
+ALTER TABLE `tbl_solusi`
+  ADD PRIMARY KEY (`id_solusi`),
+  ADD KEY `id_penyakit` (`id_penyakit`);
+
+--
 -- Indeks untuk tabel `user`
 --
 ALTER TABLE `user`
@@ -264,19 +298,35 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT untuk tabel `hasil_diagnosa`
 --
 ALTER TABLE `hasil_diagnosa`
-  MODIFY `id_hasil` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=290;
+  MODIFY `id_hasil` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=291;
 
 --
 -- AUTO_INCREMENT untuk tabel `tbl_basis_aturan`
 --
 ALTER TABLE `tbl_basis_aturan`
-  MODIFY `id_aturan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id_aturan` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+
+--
+-- AUTO_INCREMENT untuk tabel `tbl_solusi`
+--
+ALTER TABLE `tbl_solusi`
+  MODIFY `id_solusi` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `user_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+--
+
+--
+-- Ketidakleluasaan untuk tabel `tbl_solusi`
+--
+ALTER TABLE `tbl_solusi`
+  ADD CONSTRAINT `fk_penyakit_solusi` FOREIGN KEY (`id_penyakit`) REFERENCES `tbl_penyakit` (`id_penyakit`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

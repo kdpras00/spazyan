@@ -80,6 +80,7 @@ $admin = mysqli_fetch_array($data_admin);
                 <a class="nav-link" href="kerusakan.php">
                     <i class="fas fa-fw fa-oil-can"></i>
                     <span>Data Kerusakan</span></a> </li>
+            <li class="nav-item"><a class="nav-link" href="solusi.php"><i class="fas fa-fw fa-wrench"></i><span>Data Solusi</span></a></li>
 
             <li class="nav-item">
                 <a class="nav-link" href="gejala.php">

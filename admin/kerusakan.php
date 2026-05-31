@@ -56,6 +56,7 @@ $admin = mysqli_fetch_array($data_admin);
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Manajemen Data</div>
             <li class="nav-item active"><a class="nav-link" href="kerusakan.php"><i class="fas fa-fw fa-oil-can"></i><span>Data Kerusakan</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="solusi.php"><i class="fas fa-fw fa-wrench"></i><span>Data Solusi</span></a></li>
             <li class="nav-item"><a class="nav-link" href="gejala.php"><i class="fas fa-fw fa-list-alt"></i><span>Data Gejala</span></a></li>
             <li class="nav-item"><a class="nav-link" href="aturan.php"><i class="fas fa-fw fa-cogs"></i><span>Basis Aturan</span></a></li>
             <li class="nav-item"><a class="nav-link" href="riwayat.php"><i class="fas fa-fw fa-history"></i><span>Riwayat Diagnosa</span></a></li>
@@ -93,29 +94,17 @@ $admin = mysqli_fetch_array($data_admin);
                                         <tr>
                                             <th>Kode</th>
                                             <th>Nama Kerusakan</th>
-                                            <th>Solusi</th>
                                             <th width="100px">Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php
-                                        $data = mysqli_query($koneksi, "SELECT p.*, GROUP_CONCAT(s.solusi SEPARATOR '\n') as solusi FROM tbl_penyakit p LEFT JOIN tbl_solusi s ON p.id_penyakit = s.id_penyakit GROUP BY p.id_penyakit");
+                                        $data = mysqli_query($koneksi, "SELECT * FROM tbl_penyakit ORDER BY id_penyakit ASC");
                                         while($d = mysqli_fetch_array($data)){
                                         ?>
                                         <tr>
                                             <td><?= htmlspecialchars($d['id_penyakit']); ?></td>
                                             <td><?= htmlspecialchars($d['nama_penyakit']); ?></td>
-                                            <td>
-                                                <?php
-                                                // Meringkas teks solusi jika terlalu panjang
-                                                $solusi = htmlspecialchars($d['solusi'] ?? '');
-                                                if (strlen($solusi) > 100) {
-                                                    echo substr($solusi, 0, 100) . '...';
-                                                } else {
-                                                    echo $solusi;
-                                                }
-                                                ?>
-                                            </td>
                                             <td>
                                                 <div class="action-btns">
                                                     <a href="editkerusakan.php?id_penyakit=<?= $d['id_penyakit'];?>" class="btn btn-warning btn-sm" title="Edit">

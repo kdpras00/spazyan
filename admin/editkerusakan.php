@@ -12,27 +12,15 @@ include 'koneksi.php'; // Path Diperbaiki
 if(isset($_POST['ubah'])){
     $id_penyakit = $_POST['id_penyakit'];
     $nama_penyakit = $_POST['nama_penyakit'];
-    $solusi = $_POST['solusi'];
 
-    if(empty($nama_penyakit) || empty($solusi)) {
-        echo "<script>alert('Nama kerusakan dan solusi tidak boleh kosong!'); window.history.back();</script>";
+    if(empty($nama_penyakit)) {
+        echo "<script>alert('Nama kerusakan tidak boleh kosong!'); window.history.back();</script>";
     } else {
         $sql = "UPDATE tbl_penyakit SET nama_penyakit = ? WHERE id_penyakit = ?";
         $stmt = mysqli_prepare($koneksi, $sql);
         mysqli_stmt_bind_param($stmt, "ss", $nama_penyakit, $id_penyakit);
 
         if(mysqli_stmt_execute($stmt)){
-            mysqli_query($koneksi, "DELETE FROM tbl_solusi WHERE id_penyakit = '$id_penyakit'");
-            $baris_solusi = explode("\n", $solusi);
-            $sql_solusi = "INSERT INTO tbl_solusi (id_penyakit, solusi) VALUES (?, ?)";
-            $stmt_solusi = mysqli_prepare($koneksi, $sql_solusi);
-            foreach ($baris_solusi as $baris) {
-                $baris = trim($baris);
-                if (!empty($baris)) {
-                    mysqli_stmt_bind_param($stmt_solusi, "ss", $id_penyakit, $baris);
-                    mysqli_stmt_execute($stmt_solusi);
-                }
-            }
             $_SESSION['pesan_sukses'] = "Data kerusakan berhasil diperbarui.";
             header("Location: kerusakan.php"); // Path Diperbaiki
             exit;
@@ -50,7 +38,7 @@ if(!isset($_GET['id_penyakit'])) {
 }
 $id_edit = $_GET['id_penyakit'];
 
-$sql_select = "SELECT p.*, GROUP_CONCAT(s.solusi SEPARATOR '\n') as solusi FROM tbl_penyakit p LEFT JOIN tbl_solusi s ON p.id_penyakit = s.id_penyakit WHERE p.id_penyakit = ? GROUP BY p.id_penyakit";
+$sql_select = "SELECT * FROM tbl_penyakit WHERE id_penyakit = ?";
 $stmt_select = mysqli_prepare($koneksi, $sql_select);
 mysqli_stmt_bind_param($stmt_select, "s", $id_edit);
 mysqli_stmt_execute($stmt_select);
@@ -104,6 +92,7 @@ $admin = mysqli_fetch_array($data_admin);
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Manajemen Data</div>
             <li class="nav-item active"><a class="nav-link" href="kerusakan.php"><i class="fas fa-fw fa-oil-can"></i><span>Data Kerusakan</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="solusi.php"><i class="fas fa-fw fa-wrench"></i><span>Data Solusi</span></a></li>
             <li class="nav-item"><a class="nav-link" href="gejala.php"><i class="fas fa-fw fa-list-alt"></i><span>Data Gejala</span></a></li>
             <li class="nav-item"><a class="nav-link" href="aturan.php"><i class="fas fa-fw fa-cogs"></i><span>Basis Aturan</span></a></li>
             <li class="nav-item"><a class="nav-link" href="riwayat.php"><i class="fas fa-fw fa-history"></i><span>Riwayat Diagnosa</span></a></li>
@@ -138,10 +127,6 @@ $admin = mysqli_fetch_array($data_admin);
                                 <div class="form-group">
                                     <label for="nama_penyakit">Nama Kerusakan</label>
                                     <input type="text" class="form-control" id="nama_penyakit" name="nama_penyakit" value="<?= htmlspecialchars($d['nama_penyakit']); ?>" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="solusi">Solusi</label>
-                                    <textarea class="form-control" id="solusi" name="solusi" rows="4" required><?= htmlspecialchars($d['solusi'] ?? ''); ?></textarea>
                                 </div>
                                 <button type="submit" class="btn btn-primary" name="ubah">Simpan Perubahan</button>
                                 <a href="kerusakan.php" class="btn btn-secondary">Batal</a>

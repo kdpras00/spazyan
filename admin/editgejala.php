@@ -92,6 +92,7 @@ $admin = mysqli_fetch_array($data_admin);
             <hr class="sidebar-divider">
             <div class="sidebar-heading">Manajemen Data</div>
             <li class="nav-item"><a class="nav-link" href="kerusakan.php"><i class="fas fa-fw fa-oil-can"></i><span>Data Kerusakan</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="solusi.php"><i class="fas fa-fw fa-wrench"></i><span>Data Solusi</span></a></li>
             <li class="nav-item active"><a class="nav-link" href="gejala.php"><i class="fas fa-fw fa-list-alt"></i><span>Data Gejala</span></a></li>
             <li class="nav-item"><a class="nav-link" href="aturan.php"><i class="fas fa-fw fa-cogs"></i><span>Basis Aturan</span></a></li>
             <li class="nav-item"><a class="nav-link" href="riwayat.php"><i class="fas fa-fw fa-history"></i><span>Riwayat Diagnosa</span></a></li>
